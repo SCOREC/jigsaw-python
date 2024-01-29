@@ -90,6 +90,7 @@ from jigsawpy.tools.meshutils import attach, jumble
 from jigsawpy.parse.saveoff import saveoff
 from jigsawpy.parse.savewav import savewav
 from jigsawpy.parse.savevtk import savevtk
+from jigsawpy.parse.savevtk import savevtk1d
 
 
 class cmd:

@@ -29,10 +29,10 @@ def case_0a(src_path, dst_path):
         ((9, 0), 0),
         ((9, 9), 0),
         ((0, 9), 0),
-        ((4, 4), 0),          # inner square
-        ((5, 4), 0),
-        ((5, 5), 0),
-        ((4, 5), 0)],
+        ((4, 4), 1),          # inner square
+        ((5, 4), 1),
+        ((5, 5), 1),
+        ((4, 5), 1)],
         dtype=geom.VERT2_t)
 
     geom.edge2 = np.array([   # list of "edges" between vert
@@ -40,10 +40,10 @@ def case_0a(src_path, dst_path):
         ((1, 2), 0),
         ((2, 3), 0),
         ((3, 0), 0),
-        ((4, 5), 0),          # inner square
-        ((5, 6), 0),
-        ((6, 7), 0),
-        ((7, 4), 0)],
+        ((4, 5), 2),          # inner square
+        ((5, 6), 2),
+        ((6, 7), 2),
+        ((7, 4), 2)],
         dtype=geom.EDGE2_t)
 
 #------------------------------------ build mesh via JIGSAW!
@@ -67,8 +67,21 @@ def case_0a(src_path, dst_path):
 
     print("Saving case_0a.vtk file.")
 
-    jigsawpy.savevtk(os.path.join(
-        dst_path, "case_0a.vtk"), mesh)
+    jigsawpy.savemsh(os.path.join(
+        dst_path, "case_0a-MESH.msh"), mesh)
+
+    # adding the following along with the savevtk1d call results in not all the
+    # boundary edges being rendered
+    #mesh.value = mesh.FLT32_t(mesh.point['IDtag']) # save vtx ids/classification
+
+    # It seems that there is no single list of edges in jigsawpy that is all 
+    # the edges in the mesh.  mesh.edge2 are edges 'classified' on the geometric
+    # model boundary.  mesh.tria3 (and other cell types) appear to simply store
+    # their bounding vertices instead of bounding edges (or dim-1 entities).
+    # The edges that bound interior triangles may not exist in the data
+    # structure.  Retrieving classification may be difficult.
+    jigsawpy.savevtk1d(os.path.join(
+        dst_path, "case_0a-1d.vtk"), mesh)
 
     return
 
@@ -140,7 +153,13 @@ def case_0b(src_path, dst_path):
     opts.mesh_top1 = True               # for sharp feat's
     opts.geom_feat = True
 
+    jigsawpy.savemsh(os.path.join(
+        dst_path, "case_0b.msh"), mesh)
+
     jigsawpy.lib.jigsaw(opts, geom, mesh)
+
+    jigsawpy.savemsh(os.path.join(
+        dst_path, "case_0b-MESH.msh"), mesh)
 
     print("Saving case_0b.vtk file.")
 

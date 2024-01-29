@@ -85,7 +85,7 @@ def savearray(data, fptr):
     return
 
 
-def save_mesh_file(mesh, fptr):
+def save_mesh_file(mesh, fptr, dimToWrite=None):
     """
     SAVE-MESH-FILE: save a JIGSAW mesh object to *.VTK file.
 
@@ -95,6 +95,12 @@ def save_mesh_file(mesh, fptr):
         "Q4": 0, "T4": 0, "H8": 0,
         "W6": 0, "P5": 0}
 
+    if (dimToWrite is None):
+        if (mesh.vert2 is not None):
+            dimToWrite=2
+        if (mesh.vert3 is not None):
+            dimToWrite=3
+
     if (mesh.vert2 is not None):
         nnum["PT"] += mesh.vert2.size
     if (mesh.vert3 is not None):
@@ -103,19 +109,20 @@ def save_mesh_file(mesh, fptr):
     if (mesh.edge2 is not None):
         nnum["E2"] += mesh.edge2.size
 
-    if (mesh.tria3 is not None):
-        nnum["T3"] += mesh.tria3.size
-    if (mesh.quad4 is not None):
-        nnum["Q4"] += mesh.quad4.size
+    if (dimToWrite > 1):
+        if (mesh.tria3 is not None):
+            nnum["T3"] += mesh.tria3.size
+        if (mesh.quad4 is not None):
+            nnum["Q4"] += mesh.quad4.size
 
-    if (mesh.tria4 is not None):
-        nnum["T4"] += mesh.tria4.size
-    if (mesh.hexa8 is not None):
-        nnum["H8"] += mesh.hexa8.size
-    if (mesh.wedg6 is not None):
-        nnum["W6"] += mesh.wedg6.size
-    if (mesh.pyra5 is not None):
-        nnum["P5"] += mesh.pyra5.size
+        if (mesh.tria4 is not None):
+            nnum["T4"] += mesh.tria4.size
+        if (mesh.hexa8 is not None):
+            nnum["H8"] += mesh.hexa8.size
+        if (mesh.wedg6 is not None):
+            nnum["W6"] += mesh.wedg6.size
+        if (mesh.pyra5 is not None):
+            nnum["P5"] += mesh.pyra5.size
 
     nline = \
         nnum["E2"] * 1 + nnum["T3"] * 1 + \
@@ -157,29 +164,30 @@ def save_mesh_file(mesh, fptr):
         savecells(
             mesh.edge2["index"], fptr, +2)
 
-    if (mesh.tria3 is not None):
-        savecells(
-            mesh.tria3["index"], fptr, +3)
+    if (dimToWrite > 1):
+        if (mesh.tria3 is not None):
+            savecells(
+                mesh.tria3["index"], fptr, +3)
 
-    if (mesh.quad4 is not None):
-        savecells(
-            mesh.quad4["index"], fptr, +4)
+        if (mesh.quad4 is not None):
+            savecells(
+                mesh.quad4["index"], fptr, +4)
 
-    if (mesh.tria4 is not None):
-        savecells(
-            mesh.tria4["index"], fptr, +4)
+        if (mesh.tria4 is not None):
+            savecells(
+                mesh.tria4["index"], fptr, +4)
 
-    if (mesh.hexa8 is not None):
-        savecells(
-            mesh.hexa8["index"], fptr, +8)
+        if (mesh.hexa8 is not None):
+            savecells(
+                mesh.hexa8["index"], fptr, +8)
 
-    if (mesh.wedg6 is not None):
-        savecells(
-            mesh.wedg6["index"], fptr, +6)
+        if (mesh.wedg6 is not None):
+            savecells(
+                mesh.wedg6["index"], fptr, +6)
 
-    if (mesh.pyra5 is not None):
-        savecells(
-            mesh.pyra5["index"], fptr, +5)
+        if (mesh.pyra5 is not None):
+            savecells(
+                mesh.pyra5["index"], fptr, +5)
 
     #----------------------------------- write TYPES dataset
 
@@ -190,29 +198,30 @@ def save_mesh_file(mesh, fptr):
         for ipos in range(mesh.edge2.size):
             fptr.write("3\n")
 
-    if (mesh.tria3 is not None):
-        for ipos in range(mesh.tria3.size):
-            fptr.write("5\n")
+    if (dimToWrite > 1):
+        if (mesh.tria3 is not None):
+            for ipos in range(mesh.tria3.size):
+                fptr.write("5\n")
 
-    if (mesh.quad4 is not None):
-        for ipos in range(mesh.quad4.size):
-            fptr.write("9\n")
+        if (mesh.quad4 is not None):
+            for ipos in range(mesh.quad4.size):
+                fptr.write("9\n")
 
-    if (mesh.tria4 is not None):
-        for ipos in range(mesh.tria4.size):
-            fptr.write("10\n")
+        if (mesh.tria4 is not None):
+            for ipos in range(mesh.tria4.size):
+                fptr.write("10\n")
 
-    if (mesh.hexa8 is not None):
-        for ipos in range(mesh.hexa8.size):
-            fptr.write("12\n")
+        if (mesh.hexa8 is not None):
+            for ipos in range(mesh.hexa8.size):
+                fptr.write("12\n")
 
-    if (mesh.wedg6 is not None):
-        for ipos in range(mesh.wedg6.size):
-            fptr.write("13\n")
+        if (mesh.wedg6 is not None):
+            for ipos in range(mesh.wedg6.size):
+                fptr.write("13\n")
 
-    if (mesh.pyra5 is not None):
-        for ipos in range(mesh.pyra5.size):
-            fptr.write("14\n")
+        if (mesh.pyra5 is not None):
+            for ipos in range(mesh.pyra5.size):
+                fptr.write("14\n")
 
     if (mesh.value is not None and
             mesh.value.size == nnum["PT"]):
@@ -374,6 +383,58 @@ def savevtk(name, mesh):
         if   (kind == "euclidean-mesh"):
 
             save_mesh_file(mesh, fptr)
+
+        elif (kind == "ellipsoid-mesh"):
+
+            save_mesh_file(mesh, fptr)
+
+        elif (kind == "euclidean-grid"):
+
+            save_grid_file(mesh, fptr)
+
+        elif (kind == "ellipsoid-grid"):
+
+            save_grid_file(mesh, fptr)
+
+        else:
+            raise ValueError(
+                "MESH.mshID is not supported!!")
+
+    return
+
+def savevtk1d(name, mesh):
+    """
+    SAVEVTK: save a JIGSAW MSH object to file with edges and vertices only.
+
+    SAVEVTK1D(NAME, MESH)
+
+    MESH is JIGSAW's primary mesh/grid/geom class. See MSH_t
+    for details.
+
+    Data in MESH is written as-needed -- any objects defined
+    will be saved to file.
+
+    """
+
+    if (not isinstance(name, str)):
+        raise TypeError("Incorrect type: NAME.")
+
+    if (not isinstance(mesh, jigsaw_msh_t)):
+        raise TypeError("Incorrect type: MESH.")
+
+    certify(mesh)
+
+    fext = Path(name).suffix
+
+    if (fext.strip() != ".vtk"): name += ".vtk"
+
+    kind = mesh.mshID.lower()
+
+    with Path(name).open("w") as fptr:
+    #----------------------------------- write JIGSAW object
+        if   (kind == "euclidean-mesh"):
+
+            save_mesh_file(mesh, fptr, dimToWrite=1)
 
         elif (kind == "ellipsoid-mesh"):
 
