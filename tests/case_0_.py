@@ -250,6 +250,73 @@ def case_0c(src_path, dst_path):
 
     return
 
+def case_0d(src_path, dst_path):
+
+    opts = jigsawpy.jigsaw_jig_t()
+
+    geom = jigsawpy.jigsaw_msh_t()
+    mesh = jigsawpy.jigsaw_msh_t()
+
+#------------------------------------ define JIGSAW geometry
+
+    geom.mshID = "euclidean-mesh"
+    geom.ndims = +2
+    geom.vert2 = np.array([   # list of xy "node" coordinate
+        ((0, 0), 0),          # outer square 
+        ((9, 0), 0),
+        ((9, 9), 0),
+        ((0, 9), 0),
+        ((2, 4), 1),          # horizontal edge
+        ((7, 4), 1),
+        ((4, 2), 2),          # vertical edge
+        ((4, 7), 2),
+        ((4, 4), 3)],         # intersection point
+        dtype=geom.VERT2_t)
+
+    geom.edge2 = np.array([   # list of "edges" between vert
+        ((0, 1), 0),          # outer square
+        ((1, 2), 0),
+        ((2, 3), 0),
+        ((3, 0), 0),
+        ((4, 8), 4),          # horizontal edge - left
+        ((8, 5), 4),          # horizontal edge - right
+        ((6, 8), 4),          # vertical edge - bottom
+        ((8, 7), 4)],         # vertical edge - top
+        dtype=geom.EDGE2_t)
+
+#------------------------------------ build mesh via JIGSAW!
+
+    print("Call libJIGSAW: case 0d.")
+
+    opts.hfun_hmax = 0.05               # push HFUN limits
+
+    opts.mesh_dims = +2                 # 2-dim. simplexes
+
+    opts.optm_qlim = +.95
+
+    opts.mesh_top1 = True               # for sharp feat's
+    opts.geom_feat = True
+
+    jigsawpy.lib.jigsaw(opts, geom, mesh)
+
+    scr2 = jigsawpy.triscr2(            # "quality" metric
+        mesh.point["coord"],
+        mesh.tria3["index"])
+
+    print("Saving case_0d.vtk file.")
+
+    jigsawpy.savemsh(os.path.join(
+        dst_path, "case_0d-MESH.msh"), mesh)
+
+    jigsawpy.savevtk1d(os.path.join(
+        dst_path, "case_0d-1d.vtk"), mesh)
+
+    jigsawpy.savevtk(os.path.join(
+        dst_path, "case_0d.vtk"), mesh)
+
+    return
+
+
 
 def case_0_(src_path, dst_path):
 
@@ -258,5 +325,6 @@ def case_0_(src_path, dst_path):
     case_0a(src_path, dst_path)
     case_0b(src_path, dst_path)
     case_0c(src_path, dst_path)
+    case_0d(src_path, dst_path)
 
     return
