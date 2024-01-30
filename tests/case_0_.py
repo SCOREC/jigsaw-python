@@ -70,11 +70,6 @@ def case_0a(src_path, dst_path):
     jigsawpy.savemsh(os.path.join(
         dst_path, "case_0a-MESH.msh"), mesh)
 
-    # adding the following along with the savevtk1d call results in not all the
-    # boundary edges being rendered
-    #mesh.value = mesh.FLT32_t(mesh.point['IDtag']) # save vtx ids/classification
-    mesh.edgeId = mesh.FLT32_t(mesh.edge2['IDtag']) # save edge ids/classification
-
     # It seems that there is no single list of edges in jigsawpy that is all 
     # the edges in the mesh.  mesh.edge2 are edges 'classified' on the geometric
     # model boundary.  mesh.tria3 (and other cell types) appear to simply store

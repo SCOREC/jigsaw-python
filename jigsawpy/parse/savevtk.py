@@ -74,6 +74,8 @@ def savearray(data, fptr):
         nend = next + nrow
 
         sfmt = "%.9g\n"
+        if isinstance(dptr[0], jigsaw_msh_t.INDEX_t):
+          sfmt = "%d\n"
         sfmt = sfmt * nrow
 
         fdat = sfmt % tuple(dptr[next:nend].ravel())
@@ -223,16 +225,28 @@ def save_mesh_file(mesh, fptr, dimToWrite=None):
             for ipos in range(mesh.pyra5.size):
                 fptr.write("14\n")
 
-    if (mesh.edgeId is not None and
-            mesh.edgeId.size == nnum["E2"]):
-    #----------------------------------- write EDGEID attrib.
+    if (dimToWrite == 1):
+      if (mesh.edge2['IDtag'] is not None and
+              mesh.edge2['IDtag'].size == nnum["E2"]):
+      #----------------------------------- write EDGEID attrib.
+          fptr.write(
+              "CELL_DATA " +
+              str(mesh.edge2['IDtag'].size) + "\n")
+          fptr.write("SCALARS edgeId int 1\n")
+          fptr.write("LOOKUP_TABLE default \n")
+
+          savearray(mesh.edge2['IDtag'], fptr)
+
+    if (mesh.point['IDtag'] is not None and
+            mesh.point['IDtag'].size == nnum["PT"]):
+    #----------------------------------- write VALUE attrib.
         fptr.write(
-            "CELL_DATA " +
-            str(mesh.edgeId.size) + "\n")
-        fptr.write("SCALARS edgeId float 1\n")
+            "POINT_DATA " +
+            str(mesh.point['IDtag'].size) + "\n")
+        fptr.write("SCALARS pointId int 1\n")
         fptr.write("LOOKUP_TABLE default \n")
 
-        savearray(mesh.edgeId, fptr)
+        savearray(mesh.point['IDtag'], fptr)
 
 
     if (mesh.value is not None and
