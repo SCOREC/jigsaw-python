@@ -279,9 +279,9 @@ def case_0d(src_path, dst_path):
         ((2, 3), 0),
         ((3, 0), 0),
         ((4, 8), 4),          # horizontal edge - left
-        ((8, 5), 4),          # horizontal edge - right
-        ((6, 8), 4),          # vertical edge - bottom
-        ((8, 7), 4)],         # vertical edge - top
+        ((8, 5), 5),          # horizontal edge - right
+        ((6, 8), 6),          # vertical edge - bottom
+        ((8, 7), 7)],         # vertical edge - top
         dtype=geom.EDGE2_t)
 
 #------------------------------------ build mesh via JIGSAW!
