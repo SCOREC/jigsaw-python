@@ -284,6 +284,17 @@ def case_0d(src_path, dst_path):
         ((8, 7), 7)],         # vertical edge - top
         dtype=geom.EDGE2_t)
 
+    et = jigsawpy.\
+        jigsaw_def_t.JIGSAW_EDGE2_TAG
+
+    # id, object index, object type
+    geom.bound = np.array([
+        (1, 0, et),
+        (1, 1, et),
+        (1, 2, et),
+        (1, 3, et)],
+        dtype=geom.BOUND_t)
+
 #------------------------------------ build mesh via JIGSAW!
 
     print("Call libJIGSAW: case 0d.")
