@@ -203,6 +203,9 @@ class jigsaw_msh_t:
         self.slope = np.empty(
             DIM2, dtype=jigsaw_msh_t.FLT32_t)
 
+        self.edgeId = np.empty(
+            DIM2, dtype=jigsaw_msh_t.FLT32_t)
+
     @property
     def point(self):
     #------------------------------------------ POINT helper

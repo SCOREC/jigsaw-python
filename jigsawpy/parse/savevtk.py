@@ -223,6 +223,18 @@ def save_mesh_file(mesh, fptr, dimToWrite=None):
             for ipos in range(mesh.pyra5.size):
                 fptr.write("14\n")
 
+    if (mesh.edgeId is not None and
+            mesh.edgeId.size == nnum["E2"]):
+    #----------------------------------- write EDGEID attrib.
+        fptr.write(
+            "CELL_DATA " +
+            str(mesh.edgeId.size) + "\n")
+        fptr.write("SCALARS edgeId float 1\n")
+        fptr.write("LOOKUP_TABLE default \n")
+
+        savearray(mesh.edgeId, fptr)
+
+
     if (mesh.value is not None and
             mesh.value.size == nnum["PT"]):
     #----------------------------------- write VALUE attrib.
