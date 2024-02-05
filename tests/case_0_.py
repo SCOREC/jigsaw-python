@@ -376,15 +376,7 @@ def case_0e(src_path, dst_path):
         (1, 0, et),  # outer
         (1, 1, et),
         (1, 2, et),
-        (1, 3, et),
-        (1, 4, et),  # inner
-        (1, 5, et),
-        (1, 6, et),
-        (1, 7, et),
-        (2, 4, et),  # innermost
-        (2, 5, et),
-        (2, 6, et),
-        (2, 7, et)],
+        (1, 3, et)],
         dtype=geom.BOUND_t)
 
 #------------------------------------ build mesh via JIGSAW!
