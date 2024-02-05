@@ -328,6 +328,98 @@ def case_0d(src_path, dst_path):
     return
 
 
+def case_0e(src_path, dst_path):
+
+    opts = jigsawpy.jigsaw_jig_t()
+
+    geom = jigsawpy.jigsaw_msh_t()
+    mesh = jigsawpy.jigsaw_msh_t()
+
+#------------------------------------ define JIGSAW geometry
+
+    geom.mshID = "euclidean-mesh"
+    geom.ndims = +2
+    geom.vert2 = np.array([   # list of xy "node" coordinate
+        ((0, 0), 0),            # outer square
+        ((9, 0), 0),
+        ((9, 9), 0),
+        ((0, 9), 0),
+        ((2, 2), 0),            # inner square
+        ((7, 2), 0),
+        ((7, 7), 0),
+        ((2, 7), 0),
+        ((3, 3), 0),            # innermost square
+        ((6, 3), 0),
+        ((6, 6), 0),
+        ((3, 6), 0)],
+        dtype=geom.VERT2_t)
+
+    geom.edge2 = np.array([   # list of "edges" between vert
+        ((0, 1), 0),            # outer square
+        ((1, 2), 0),
+        ((2, 3), 0),
+        ((3, 0), 0),
+        ((4, 5), 1),            # inner square
+        ((5, 6), 1),
+        ((6, 7), 1),
+        ((7, 4), 1),
+        ((8, 9), 2),            # innermost square
+        ((9, 10), 2),
+        ((10, 11), 2),
+        ((11, 8), 2)],
+        dtype=geom.EDGE2_t)
+
+    et = jigsawpy.\
+        jigsaw_def_t.JIGSAW_EDGE2_TAG
+
+    geom.bound = np.array([
+        (1, 0, et),  # outer
+        (1, 1, et),
+        (1, 2, et),
+        (1, 3, et),
+        (1, 4, et),  # inner
+        (1, 5, et),
+        (1, 6, et),
+        (1, 7, et),
+        (2, 4, et),  # innermost
+        (2, 5, et),
+        (2, 6, et),
+        (2, 7, et)],
+        dtype=geom.BOUND_t)
+
+#------------------------------------ build mesh via JIGSAW!
+
+    print("Call libJIGSAW: case 0e.")
+
+    opts.hfun_hmax = 0.05               # push HFUN limits
+
+    opts.mesh_dims = +2                 # 2-dim. simplexes
+
+    opts.optm_qlim = +.95
+
+    opts.mesh_top1 = True               # for sharp feat's
+    opts.geom_feat = True
+
+    jigsawpy.savemsh(os.path.join(
+        dst_path, "case_0e.msh"), mesh)
+
+    jigsawpy.lib.jigsaw(opts, geom, mesh)
+
+    jigsawpy.savemsh(os.path.join(
+        dst_path, "case_0e-MESH.msh"), mesh)
+
+    print("Saving case_0e.vtk file.")
+
+    jigsawpy.savevtk(os.path.join(
+        dst_path, "case_0e.vtk"), mesh)
+
+    jigsawpy.savevtk1d(os.path.join(
+        dst_path, "case_0e-1d.vtk"), mesh)
+
+    return
+
+
+
 
 def case_0_(src_path, dst_path):
 
@@ -337,5 +429,6 @@ def case_0_(src_path, dst_path):
     case_0b(src_path, dst_path)
     case_0c(src_path, dst_path)
     case_0d(src_path, dst_path)
+    case_0e(src_path, dst_path)
 
     return
